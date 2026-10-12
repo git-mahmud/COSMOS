@@ -54,7 +54,7 @@ def _row_to_dict(row) -> dict:
             float(em_max) * 1e6 if em_max is not None else None,
         ],
         "access_url": str(_get(row, "access_url")),
-        "calib_level": _get(row, "calib_level"),
+        "calib_level": int(_get(row, "calib_level")) if _get(row, "calib_level") is not None else None,
         "data_release": "IRSA SPHEREx (see archive for release)",
     }
 
@@ -69,7 +69,7 @@ def search_observations(ra: float, dec: float, radius_deg: float, limit: int = 5
 
     query = (
         f"SELECT TOP {limit} {COLUMNS} FROM {OBSCORE_TABLE} "
-        f"WHERE 1=INTERSECTS(CIRCLE('ICRS', {ra}, {dec}, {radius_deg}), s_region)"
+        f"WHERE CONTAINS(POINT('ICRS', {ra}, {dec}), poly)=1"
     )
     result = _run(query, maxrec=limit)
     rows = [_row_to_dict(r) for r in result]
