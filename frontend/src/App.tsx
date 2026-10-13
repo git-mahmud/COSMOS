@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import Stats from './components/Stats'
 import SearchPanel from './components/SearchPanel'
 import SkyViewer from './components/SkyViewer'
 import ObservationDetail from './components/ObservationDetail'
 import TimeMachine from './components/TimeMachine'
 import ObservationList from './components/ObservationList'
+import HowItWorks from './components/HowItWorks'
+import Footer from './components/Footer'
 import { searchObservations, getObservation, type Observation } from './api'
 
 const DEMO_A = 'ivo://irsa.ipac/spherex_qr2?2025W17_4B_0043_1/D1'
@@ -56,10 +59,11 @@ export default function App() {
   }
 
   return (
-    <>
+    <div id="top">
       <Navbar />
       <Hero />
-      <main id="explore" className="mx-auto max-w-6xl px-4 pb-20">
+      <Stats observations={searched ? items.length : null} pairReady={!!(a && b)} />
+      <main id="explore" className="mx-auto max-w-6xl px-4 pb-12">
         <h2 className="mb-4 text-2xl font-bold">Explore Sky</h2>
         <SearchPanel onSearch={handleSearch} loading={loading} />
         <button onClick={loadDemo} disabled={loading} className="mt-3 text-sm text-cyan-400 hover:underline disabled:opacity-50">
@@ -68,7 +72,20 @@ export default function App() {
         {error && <p className="mt-4 text-red-400">{error}</p>}
         <SkyViewer center={center} items={items} selected={selected} />
         <ObservationDetail obs={selected} a={a} b={b} onSetA={setA} onSetB={setB} />
-        {a && b && <TimeMachine a={a} b={b} center={center} />}
+        {a && b ? (
+          <TimeMachine a={a} b={b} center={center} />
+        ) : (
+          <>
+            <section id="time-machine" className="mt-8 rounded-xl border border-white/10 bg-slate-900 p-4 text-sm text-slate-400">
+              <h3 className="text-xl font-bold text-cyan-400">Time Machine</h3>
+              <p className="mt-2">
+                Pick two observations (set one as A and one as B), or press "Load demo pair", to compare the sky at two
+                moments. The Change Finder appears right below it.
+              </p>
+            </section>
+            <div id="discoveries" />
+          </>
+        )}
         {searched && (
           <>
             <p className="mt-6 text-slate-400">{items.length} observations found</p>
@@ -76,6 +93,8 @@ export default function App() {
           </>
         )}
       </main>
-    </>
+      <HowItWorks />
+      <Footer />
+    </div>
   )
 }

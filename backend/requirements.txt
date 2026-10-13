@@ -3,5 +3,7 @@ uvicorn[standard]==0.32.*
 pyvo>=1.5
 astropy>=6.0
 numpy>=1.26
-pillow==12.3.0
-pip install reproject
+pillow>=10
+reproject
+scipy
+requests

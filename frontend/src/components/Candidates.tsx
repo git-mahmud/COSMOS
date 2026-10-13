@@ -1,18 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { Observation } from '../api'
+import type { Candidate } from '../types'
+import DiscoveryJourney from './DiscoveryJourney'
 
-type Candidate = {
-  id: number
-  ra: number
-  dec: number
-  x_frac: number
-  y_frac: number
-  sigma: number
-  sign: string
-  area_px: number
-  flag: string | null
-  status: string
-}
 type Result = { threshold_sigma: number; candidates: Candidate[] }
 type Props = { a: Observation; b: Observation; center: { ra: number; dec: number } }
 
@@ -20,6 +10,7 @@ export default function Candidates({ a, b, center }: Props) {
   const [data, setData] = useState<Result | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [active, setActive] = useState<number | null>(null)
+  const [journey, setJourney] = useState<Candidate | null>(null)
 
   const q = `a=${encodeURIComponent(a.source_id)}&b=${encodeURIComponent(b.source_id)}&ra=${center.ra}&dec=${center.dec}&size=0.3`
 
@@ -27,6 +18,7 @@ export default function Candidates({ a, b, center }: Props) {
     setData(null)
     setError(null)
     setActive(null)
+    setJourney(null)
     fetch(`/api/candidates?${q}`)
       .then(async (r) => {
         if (!r.ok) {
@@ -39,8 +31,14 @@ export default function Candidates({ a, b, center }: Props) {
       .catch((e) => setError(e.message))
   }, [q])
 
+  function startJourney(c: Candidate) {
+    setActive(c.id)
+    setJourney(c)
+    setTimeout(() => document.getElementById('journey')?.scrollIntoView({ behavior: 'smooth' }), 50)
+  }
+
   return (
-    <section className="mt-8 rounded-xl border border-orange-500/30 bg-slate-900 p-4">
+    <section id="discoveries" className="mt-8 rounded-xl border border-orange-500/30 bg-slate-900 p-4">
       <h3 className="text-xl font-bold text-orange-400">Change Finder</h3>
       <p className="mt-1 text-sm text-slate-400">
         Spots where B differs strongly from A (more than {data?.threshold_sigma ?? 5}× the normal noise). These are
@@ -81,14 +79,17 @@ export default function Candidates({ a, b, center }: Props) {
                 <p className="text-slate-300">Signal: {c.sigma.toFixed(1)}× noise (preliminary) · {c.sign}</p>
                 {c.flag && <p className="text-amber-400">⚠ {c.flag}</p>}
                 <p className="text-slate-500">Status: {c.status}</p>
-                <button onClick={() => setActive(c.id)} className="mt-1 text-cyan-400 hover:underline">
-                  Inspect on map
-                </button>
+                <div className="mt-1 flex gap-4">
+                  <button onClick={() => setActive(c.id)} className="text-cyan-400 hover:underline">Inspect on map</button>
+                  <button onClick={() => startJourney(c)} className="font-semibold text-orange-400 hover:underline">Start Discovery Journey</button>
+                </div>
               </article>
             ))}
           </div>
         </div>
       )}
+
+      {journey && <DiscoveryJourney a={a} b={b} center={center} cand={journey} onClose={() => setJourney(null)} />}
     </section>
   )
 }

@@ -1,32 +1,23 @@
-# React + TypeScript + Vite
+# COSMOS: Explore the Changing Universe
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+NASA Space Apps Challenge 2026, SPHEREx challenge.
 
-Currently, two official plugins are available:
+COSMOS lets anyone explore real SPHEREx observations, compare the same sky region at two moments, and investigate possible changes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
+- Sky Explorer: search by RA/Dec, see real image footprints on a sky map (Aladin Lite)
+- Time Machine: slider, blink, difference and side-by-side views of two aligned images
+- Change Finder: lists spots where two images differ strongly, with evidence
+- Discovery Journey: guided 5-step explanation for each candidate
 
-## React Compiler
+## Honest limits
+- Candidates are unconfirmed. A difference can also come from noise or small alignment errors.
+- The signal number is a preliminary measure, not a calibrated probability.
+- Images are compared on a 0.3 degree square, in one color band at a time.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Data
+SPHEREx data from NASA/IPAC Infrared Science Archive (IRSA). Map background: DSS2 via Aladin Lite (CDS).
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Run locally
+Backend: `cd backend && pip install -r requirements.txt && uvicorn app.main:app --port 8000`
+Frontend: `cd frontend && npm install && npm run dev`

@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
 
 from . import irsa, preview
 from .config import CORS_ORIGINS
@@ -96,3 +98,8 @@ def candidates(
         return preview.find_candidates(a, b, ra, dec, size, sigma)
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Candidate error: {e}")
+
+
+_dist = Path(__file__).resolve().parents[2] / "frontend" / "dist"
+if _dist.exists():
+    app.mount("/", StaticFiles(directory=_dist, html=True), name="site")

@@ -66,7 +66,7 @@ export default function TimeMachine({ a, b, center }: Props) {
   const tabs: [View, string][] = [['slider', 'Slider'], ['blink', 'Blink'], ['diff', 'Difference'], ['side', 'Side by side']]
 
   return (
-    <section className="mt-8 rounded-xl border border-cyan-500/30 bg-slate-900 p-4">
+    <section id="time-machine" className="mt-8 rounded-xl border border-cyan-500/30 bg-slate-900 p-4">
       <h3 className="text-xl font-bold text-cyan-400">Time Machine</h3>
       <p className="mt-1 text-sm text-slate-400">
         A: {a.observed_start?.slice(0, 10)} · B: {b.observed_start?.slice(0, 10)} · centered on RA {center.ra}, Dec {center.dec}
