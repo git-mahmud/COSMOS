@@ -1,7 +1,8 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
-from . import irsa
+from . import irsa, preview
 from .config import CORS_ORIGINS
 
 app = FastAPI(title="COSMOS API", version="0.1.0")
@@ -43,3 +44,55 @@ def observation(id: str):
     if not item:
         raise HTTPException(status_code=404, detail="Observation not found")
     return item
+
+
+@app.get("/api/preview")
+def get_preview(
+    id: str,
+    ra: float,
+    dec: float,
+    size: float = Query(0.3, gt=0, le=1, description="degrees"),
+):
+    try:
+        path = preview.render_png(id, ra, dec, size)
+    except LookupError:
+        raise HTTPException(status_code=404, detail="Observation not found")
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Preview error: {e}")
+    return FileResponse(path, media_type="image/png")
+
+
+@app.get("/api/prepare")
+def prepare(id: str):
+    return {"state": preview.prepare_status(id)}
+
+
+@app.get("/api/compare")
+def compare(
+    a: str,
+    b: str,
+    ra: float,
+    dec: float,
+    size: float = Query(0.3, gt=0, le=1),
+    view: str = Query("diff", pattern="^(a|b|diff)$"),
+):
+    try:
+        path = preview.render_compare(a, b, ra, dec, size, view)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Compare error: {e}")
+    return FileResponse(path, media_type="image/png")
+
+
+@app.get("/api/candidates")
+def candidates(
+    a: str,
+    b: str,
+    ra: float,
+    dec: float,
+    size: float = Query(0.3, gt=0, le=1),
+    sigma: float = Query(5.0, ge=3, le=10),
+):
+    try:
+        return preview.find_candidates(a, b, ra, dec, size, sigma)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Candidate error: {e}")
