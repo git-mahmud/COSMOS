@@ -1,10 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-type Props = { onSearch: (ra: number, dec: number) => void; loading: boolean }
+type Props = {
+  onSearch: (ra: number, dec: number) => void
+  loading: boolean
+  live: { ra: number; dec: number } | null
+}
 
-export default function SearchPanel({ onSearch, loading }: Props) {
+export default function SearchPanel({ onSearch, loading, live }: Props) {
   const [ra, setRa] = useState('150.1')
   const [dec, setDec] = useState('2.2')
+
+  // The boxes follow the center of the map
+  useEffect(() => {
+    if (live) {
+      setRa(live.ra.toFixed(4))
+      setDec(live.dec.toFixed(4))
+    }
+  }, [live])
 
   return (
     <form
@@ -28,6 +40,7 @@ export default function SearchPanel({ onSearch, loading }: Props) {
         className="rounded-lg bg-cyan-500 px-5 py-2 font-semibold text-slate-950 hover:bg-cyan-400 disabled:opacity-50">
         {loading ? 'Searching…' : 'Search'}
       </button>
+      <p className="w-full text-xs text-slate-500">These numbers follow the map center. You can also type your own.</p>
     </form>
   )
 }
