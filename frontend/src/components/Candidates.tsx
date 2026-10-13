@@ -3,7 +3,7 @@ import type { Observation } from '../api'
 import type { Candidate } from '../types'
 import DiscoveryJourney from './DiscoveryJourney'
 
-type Result = { threshold_sigma: number; candidates: Candidate[] }
+type Result = { threshold_sigma: number; total: number; candidates: Candidate[] }
 type Props = { a: Observation; b: Observation; center: { ra: number; dec: number } }
 
 export default function Candidates({ a, b, center }: Props) {
@@ -46,7 +46,11 @@ export default function Candidates({ a, b, center }: Props) {
       </p>
 
       {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
-      {!data && !error && <p className="mt-4 text-sm text-slate-300">⏳ Scanning…</p>}
+      {data && (
+        <p className="mt-2 text-sm text-slate-400">
+          Showing the strongest {data.candidates.length} of {data.total} spots found.
+        </p>
+      )}
 
       {data && (
         <div className="mt-4 grid gap-6 lg:grid-cols-2">

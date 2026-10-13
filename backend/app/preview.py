@@ -194,7 +194,8 @@ def find_candidates(a, b, ra, dec, size_deg, sigma=5.0, max_n=20):
             "status": "Needs review",
         })
     found.sort(key=lambda c: -c["sigma"])
+    total = len(found)
     found = found[:max_n]
     for idx, c in enumerate(found, 1):
         c["id"] = idx
-    return {"threshold_sigma": sigma, "candidates": found}
+    return {"threeshold_sigma": sigma, "total": total, "candidates": found}
