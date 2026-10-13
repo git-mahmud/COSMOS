@@ -16,7 +16,7 @@ function norm(ra: number, dec: number) {
   return { ra: ((ra % 360) + 360) % 360, dec: Math.max(-90, Math.min(90, dec)) }
 }
 
-export default function SkyViewer({ center, items, selected, onSearchHere, onMove }: Props) {
+export default function SkyViewer({ center, items, selected, onMove }: Props) {
   const aladin = useRef<any>(null)
   const allCat = useRef<any>(null)
   const selCat = useRef<any>(null)
@@ -93,13 +93,6 @@ export default function SkyViewer({ center, items, selected, onSearchHere, onMov
     }
   }, [ready, selected])
 
-  function searchHere() {
-    if (!aladin.current) return
-    const [r, d] = aladin.current.getRaDec()
-    const p = norm(r, d)
-    onSearchHere(p.ra, p.dec)
-  }
-
   function goName(e: FormEvent) {
     e.preventDefault()
     if (!name.trim() || !aladin.current) return
@@ -125,12 +118,6 @@ export default function SkyViewer({ center, items, selected, onSearchHere, onMov
           />
           <button type="submit" className="rounded-lg bg-slate-700 px-3 py-2 text-sm hover:bg-slate-600">Go</button>
         </form>
-        <button
-          onClick={searchHere}
-          className="rounded-lg bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-400"
-        >
-          Search here (center of the map)
-        </button>
         {nameMsg && <span className="text-xs text-amber-400">{nameMsg}</span>}
       </div>
       <p className="mb-2 text-xs text-slate-500">
