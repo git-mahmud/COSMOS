@@ -6,7 +6,9 @@ COSMOS is a web app built for the **NASA Space Apps Challenge 2026** (SPHEREx ch
 
 > Every result in COSMOS is a **candidate**, never a confirmed discovery.
 
-<!-- Add a screenshot or GIF here: ![COSMOS demo](docs/demo.gif) -->
+![Sky Explorer](docs/sky-map.png)
+![Time Machine](docs/time-machine.png)
+![Change Finder](docs/change-finder.png)
 
 ## Features
 
