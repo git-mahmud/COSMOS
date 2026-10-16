@@ -1,7 +1,6 @@
 # COSMOS: Explore the Changing Universe
 
 **Live demo:** https://cosmos-9wa2.onrender.com
-*(Free hosting: the first visit can take about a minute to wake up.)*
 
 COSMOS is a web app built for the **NASA Space Apps Challenge 2026** (SPHEREx challenge). It uses real observations from NASA's SPHEREx space telescope, lets anyone compare the same patch of sky at two different dates, and lists the spots that changed the most.
 
